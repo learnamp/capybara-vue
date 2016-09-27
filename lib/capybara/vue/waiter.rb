@@ -45,12 +45,21 @@ module Capybara
       def setup_ready
         page.execute_script <<-JS
           window.vueReady = false;
-	  Vue.nextTick(function() {
+          if (typeof Vue === 'undefined') {
+            // Guard against edge case were page content is replaced in
+            // between the initial vue_loaded? check and the call to
+            // setup_read, e.g. because the Capybara test clicks a
+            // download-as-pdf link. In this case Vue is by definition
+            // done:
             window.vueReady = true;
-          });
+          } else {
+	          Vue.nextTick(function() {
+              window.vueReady = true;
+            });
+          }
         JS
       end
-      
+
       def page_reloaded_on_wait?
         page.evaluate_script("window.vueReady === undefined")
       end
