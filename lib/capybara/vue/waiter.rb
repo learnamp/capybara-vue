@@ -46,7 +46,7 @@ module Capybara
       def setup_ready
         page.execute_script <<-JS
           window.vueReady = false;
-          if (typeof Vue === 'undefined') {
+          if (typeof window.app === 'undefined') {
             // Guard against edge case were page content is replaced in
             // between the initial vue_loaded? check and the call to
             // setup_read, e.g. because the Capybara test clicks a
@@ -54,7 +54,7 @@ module Capybara
             // done:
             window.vueReady = true;
           } else {
-	          Vue.nextTick(function() {
+	          window.app.nextTick(function() {
               window.vueReady = true;
             });
           }
