@@ -36,7 +36,8 @@ module Capybara
 
       def vue_loaded?
         begin
-          page.evaluate_script "(typeof Vue !== 'undefined')"
+          # Unique to Learn Amp - single Vue 3 instance exists on window.app
+          page.evaluate_script "(typeof window.app !== 'undefined')"
         rescue Capybara::NotSupportedByDriverError
           false
         end
